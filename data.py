@@ -14,13 +14,13 @@ class Tweets:
     def load_data(self, refresh = False):
         try:
             assert not refresh
-            self.data = pd.read_pickle('data')
+            self.data = pd.read_pickle(self.username)
         except:
             self.data = pd.DataFrame()
             self.save_data()
     
     def save_data(self):
-        self.data.to_pickle('data')
+        self.data.to_pickle(self.username)
     
     def query(self, params = {}, seconds = 60):
         subprocess.call(
