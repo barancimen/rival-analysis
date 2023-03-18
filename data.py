@@ -15,12 +15,17 @@ class Tweets:
         try:
             assert not refresh
             self.data = pd.read_pickle(self.username)
+            self.check_data()
         except:
             self.data = pd.DataFrame()
             self.save_data()
     
     def save_data(self):
+        self.check_data()
         self.data.to_pickle(self.username)
+    
+    def check_data(self):
+        assert self.data.index.duplicated().sum() == 0, 'Duplicate rows'
     
     def query(self, params = {}, seconds = 60):
         subprocess.call(
@@ -33,7 +38,7 @@ class Tweets:
         )
     
     def load_temp(self):
-        temp = pd.read_csv('temp', sep = '\t', names = ['id', 'date', 'handle', 'text'])
+        temp = pd.read_csv('temp', sep = '\t', quoting = 3, names = ['id', 'date', 'handle', 'text'])
         temp = temp[temp['handle'] == f'@{self.username}'].drop('handle', axis = 1)
         temp['date'] = pd.to_datetime(temp['date'], format = '%b %d, %Y · %I:%M %p %Z')
 
